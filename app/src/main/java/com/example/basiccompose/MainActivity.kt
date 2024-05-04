@@ -1,20 +1,31 @@
 package com.example.basiccompose
 
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons.Filled
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +36,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.basiccompose.ui.theme.BasicComposeTheme
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,16 +57,33 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var isExpanded by remember { mutableStateOf(false) }
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    val extraPadding by animateDpAsState(
+        targetValue = if (isExpanded) 48.dp else 0.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioHighBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         modifier = Modifier.padding(all = 4.dp)
     ) {
-        Row(modifier = Modifier.padding(24.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(24.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+
+        ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(bottom = if (isExpanded) 48.dp else 0.dp)
+                    .padding(bottom = 12.dp)
             ) {
                 Text(
                     text = "Hello",
@@ -56,13 +91,23 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 )
                 Text(
                     text = name,
-                    modifier = modifier
+                    modifier = modifier,
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
                 )
+                if (isExpanded)
+                    Text(
+                        text = ("Hello hello ").repeat(30),
+                        style = MaterialTheme.typography.bodySmall
+                    )
             }
-            ElevatedButton(onClick = { /*TODO*/
+            IconButton(onClick = { /*TODO*/
                 isExpanded = !isExpanded
             }) {
-                Text(if (isExpanded) "Show less" else "Show more")
+                Icon(
+                    imageVector = if (isExpanded) Filled.ExpandLess else Filled.ExpandMore,
+                    contentDescription = if (isExpanded) stringResource(id = R.string.show_less)
+                    else stringResource(id = R.string.show_more)
+                )
             }
         }
     }
@@ -70,20 +115,19 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun Greetings(modifier: Modifier) {
-    val names = arrayOf("Trường", "Anim")
+    val names = List(1000) { "$it" }
     Surface(
         modifier = modifier
     ) {
         Surface(
             modifier = Modifier.padding(all = 4.dp)
         ) {
-            Column {
-                for (i in names) {
-                    Greeting(name = i)
+            LazyColumn() {
+                items(items = names) { name ->
+                    Greeting(name = name)
                 }
             }
         }
-
     }
 }
 
@@ -95,7 +139,7 @@ fun Welcome(modifier: Modifier = Modifier, callback: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Welcome")
+            Text("Welcome", style = MaterialTheme.typography.headlineMedium)
             Spacer(Modifier.padding(all = 4.dp))
             ElevatedButton(onClick = { callback() }) {
                 Text("Continue")
@@ -106,7 +150,7 @@ fun Welcome(modifier: Modifier = Modifier, callback: () -> Unit) {
 
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
-    var isWelcome by remember {
+    var isWelcome by rememberSaveable {
         mutableStateOf(true)
     }
     if (isWelcome) {
@@ -124,5 +168,13 @@ fun MyApp(modifier: Modifier = Modifier) {
 fun MyAppPreview() {
     BasicComposeTheme {
         MyApp()
+    }
+}
+
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_NO)
+@Composable
+fun GreetingPreview() {
+    BasicComposeTheme {
+        Greeting(name = "1")
     }
 }
