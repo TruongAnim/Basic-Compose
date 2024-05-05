@@ -10,6 +10,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
@@ -116,6 +119,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun Greetings(modifier: Modifier) {
     val names = List(1000) { "$it" }
+    Row(
+        content = {
+            Text("Some text")
+            Text("Some more text")
+            Text("Last text")
+        }
+    )
     Surface(
         modifier = modifier
     ) {
@@ -133,16 +143,27 @@ fun Greetings(modifier: Modifier) {
 
 @Composable
 fun Welcome(modifier: Modifier = Modifier, callback: () -> Unit) {
+    val imageResource = painterResource(id = R.drawable.androidparty)
+
     Surface(modifier = modifier) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Welcome", style = MaterialTheme.typography.headlineMedium)
-            Spacer(Modifier.padding(all = 4.dp))
-            ElevatedButton(onClick = { callback() }) {
-                Text("Continue")
+        Box {
+            Image(
+                painter = imageResource,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                alpha = 0.5F
+            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                Text("Welcome", style = MaterialTheme.typography.headlineMedium)
+                Spacer(Modifier.padding(all = 4.dp))
+                ElevatedButton(onClick = { callback() }) {
+                    Text("Continue")
+                }
             }
         }
     }
@@ -163,7 +184,7 @@ fun MyApp(modifier: Modifier = Modifier) {
 
 }
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 480)
+@Preview(showBackground = true, widthDp = 720, heightDp = 1080)
 @Composable
 fun MyAppPreview() {
     BasicComposeTheme {
