@@ -9,4 +9,7 @@
     <string name="all_tasks_completed">All tasks completed</string>
     <string name="nice_work">Nice work!</string>
     <string name="complete_page">Complete page</string>
+    <string name="text_composable">Text composable</string>
+    <string name="separate_content">Creates a composable that lays out and draws a given Painter class object.</string>
+    <string name="separate_page">Separate page</string>
 </resources>

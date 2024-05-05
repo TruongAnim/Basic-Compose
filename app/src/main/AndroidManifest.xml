@@ -41,6 +41,18 @@
             android:exported="true"
             android:label="@string/complete_page"
             android:theme="@style/Theme.BasicCompose">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".pages.SeparatePage"
+            android:exported="true"
+            android:label="@string/separate_page"
+            android:theme="@style/Theme.BasicCompose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
